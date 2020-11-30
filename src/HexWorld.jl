@@ -1,5 +1,10 @@
 module HexWorld
+using Hexagons
 
-# Write your package code here.
+export HexCell, center_loc, 
+    HexagonCubic,
+    HexWorld
 
+include("grid.jl")
+include("cell.jl")
 end
