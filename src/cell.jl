@@ -45,3 +45,18 @@ function center_loc(cell::HexCell)
     y::Float64 = (cell.r  - (cell.q & 1) / 2 ) * sqrt(3) 
     return x, y
 end
+
+function cemter_and_vertices_loc(cell::HexCell)
+    x0, y0 = center_loc(ceil)
+    points = Array{Float64,2}(undef, 7, 2)
+    points[1,1] = x0
+    points[1,2] = y0
+    for i in 0:5
+        angle = 60 * i
+        x = x0 +       cosd(angle)
+        y = y0 +  sind(angle)
+        points[i + 2,1] = x
+        points[i + 2,2] = y
+    end
+    return points
+end
