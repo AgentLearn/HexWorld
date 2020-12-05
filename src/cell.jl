@@ -46,6 +46,14 @@ function center_loc(cell::HexCell)
     return x, y
 end
 
+"""
+cemter_and_vertices_loc(cell)
+
+Returns an `7 by 2` `Array{Float64,2}` where
+the first row is the center of the cell and other 6 rows contain vertices.
+
+Vertices are orthered counter-clockwise, starting with the right-most vertex.
+"""
 function cemter_and_vertices_loc(cell::HexCell)
     x0, y0 = center_loc(ceil)
     points = Array{Float64,2}(undef, 7, 2)
@@ -53,10 +61,17 @@ function cemter_and_vertices_loc(cell::HexCell)
     points[1,2] = y0
     for i in 0:5
         angle = 60 * i
-        x = x0 +       cosd(angle)
-        y = y0 +  sind(angle)
+        x = x0 + cosd(angle)
+        y = y0 + sind(angle)
         points[i + 2,1] = x
         points[i + 2,2] = y
     end
     return points
+end
+
+get_vertex(x0::Float64, y0, i::Int) = (x0 + cosd(6 * i), y0 + sind(6 * i))
+
+function get_vertex(cell::HexCell, i::Int)
+    x0, y0 = center_loc(ceil)
+    return get_vertex(x0, y0, i)
 end
