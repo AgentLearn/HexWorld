@@ -1,6 +1,10 @@
 include("grid.jl")
+include("cell_data.jl")
+
+using Parameters
 using JSON3
-using Distributions
+using Distributions, PDMats, Random
+
 
 
 # rng = Random.MersenneTwister(42)
@@ -15,11 +19,10 @@ function build_grid(builder::GridBuilder, manifest::Dict{String,String}, grid::G
     return manifest
 end
 
-struct GeologyBuilder <: GridBuilder
-    type::String
+@with_kw struct GeologyBuilder <: GridBuilder
+    type::String = "geology_builder"
     seed::Int
 end
-GeologyBuilder(seed::Int) = GeologyBuilder("geology_builder", seed)
 StructTypes.StructType(::Type{GeologyBuilder}) = StructTypes.Struct()
 
 
@@ -32,6 +35,7 @@ StructTypes.StructType(::Type{ForestBuilder}) = StructTypes.Struct()
 
 
 StructTypes.subtypes(::Type{GridBuilder}) = (geology_builder = GeologyBuilder, forest_builder = ForestBuilder)
+
 
 function build_grid(builder::GeologyBuilder, manifest::Dict{String,String}, grid::Grid)
     grid.dims = JSON3.read(manifest["grid_dim"], GridDims)
@@ -53,6 +57,21 @@ function build_grid(builder::GeologyBuilder, manifest::Dict{String,String}, grid
     sand = cell_id(sand_id, cell_properties["normal"])
     sand_f::Float64 = pack_cell_data(flat_cell_data(sand))
 
+    # chose the center of the island
+    Random.seed!(builder.seed)
+    μ = [grid.dims.width / 2. ,grid.dims.height / 2.]
+    Σ = PDiagMat([0.2 * grid.dims.width  ,0.2 * grid.dims.height])
+    b = DiagNormal(μ, Σ)
+    center = Int.(round.(rand(b)))
+    @info "Center of the island is $center"
+
+    # create shoreline
+    c = convert(Cubic, Cell(center[1], center[2]))
+    edges = EdgeCells(grid.dims.width, grid.dims.height)
+    for e in edges
+        s = cell_lerp(c, convert(Cubic, e), 0.95)
+        # println(Íe, s)
+    end
 
     return manifest
 end
@@ -79,11 +98,11 @@ function build_test_manifest()
             
     cell_types = CellMaterial[c1,c2]
     manifest["materials"] = JSON3.write(cell_types, )
-    gb = GeologyBuilder(42)
+    gb = GeologyBuilder(seed = 42)
     fb = ForestBuilder(11)
     builders = Array{GridBuilder,1}([gb, fb])
     manifest["builders"] = JSON3.write(builders)
-    return GeologyBuilder(42), Grid(dims), manifest
+    return gb, Grid(dims), manifest
 end
 
 gb, grid, manifest = build_test_manifest()

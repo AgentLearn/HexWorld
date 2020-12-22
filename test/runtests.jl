@@ -5,23 +5,23 @@ using StaticArrays
 
 
 @testset "HexWorld.jl" begin    
-    @testset "Cell Geometry" begin
-        @testset "Conversions between Cell to Cube" begin
-            cell = HexCell(12, 232)
-            hex = convert(HexagonCubic, cell)
-            cell2 = convert(HexCell, hex)
+    @testset "Cell" begin
+        @testset "Conversions between Cell to Cubic" begin
+            cell = Cell(12, 232)
+            hex = convert(Cubic, cell)
+            cell2 = convert(Cell, hex)
             @test cell == cell2
         end
         @testset "Cell Center" begin
-            c1 = HexCell(1, 1)
+            c1 = Cell(1, 1)
             @test c1 !== nothing
             x11, y11 = center_loc(c1)
             @test x11 ≈ 1.0
             @test y11 ≈ sqrt(3) / 2
-            x21, y21 = center_loc(HexCell(2, 1))
+            x21, y21 = center_loc(Cell(2, 1))
             @test x21 ≈ 3
             @test y21 ≈  sqrt(3)
-            x42, y42 = center_loc(HexCell(4, 2))
+            x42, y42 = center_loc(Cell(4, 2))
             @test x42 ≈ 7
             @test y42 ≈ 2 * sqrt(3) 
         end
@@ -33,6 +33,16 @@ using StaticArrays
     end
     
     @testset "Grid" begin
+        @testset "Edge Cell" begin
+            edges = EdgeCells(4, 5)
+            # for cell in dims
+            #     println(cell)
+            # end
+            c = collect(edges)
+            @test length(c) == length(edges)
+            @test c[1] == Cell(1, 1)
+            @test c[9] == Cell(3, 5)
+        end
         @testset "Build a Grid" begin
             manifest = Dict{String,String}()
             dims = GridDims(1_000, 1_000)
@@ -61,7 +71,7 @@ using StaticArrays
             @test c2.top_color == cell_types_c[2].top_color
             @test c2.wall_data == cell_types_c[2].wall_data
             
-            gb = GeologyBuilder(42)
+            gb = GeologyBuilder(seed = 42)
             fb = ForestBuilder(11)
             builders = Array{GridBuilder,1}([gb, fb])
             manifest["builders"] = JSON3.write(builders)
