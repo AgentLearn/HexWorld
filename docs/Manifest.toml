@@ -69,16 +69,11 @@ uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
 version = "0.10.1"
 
 [[HexWorld]]
-deps = ["Distributions", "Hexagons", "Random", "Test"]
+deps = ["Test"]
+
 path = ".."
 uuid = "18ac6b42-ccbe-4012-88d6-973e3ea85349"
 version = "0.1.0"
-
-[[Hexagons]]
-deps = ["Test"]
-git-tree-sha1 = "de4a6f9e7c4710ced6838ca906f81905f7385fd6"
-uuid = "a1b4810d-1bce-5fbd-ac56-80944d57a21f"
-version = "0.2.0"
 
 [[IOCapture]]
 deps = ["Logging"]
