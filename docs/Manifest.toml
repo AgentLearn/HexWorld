@@ -29,12 +29,6 @@ path = ".."
 uuid = "18ac6b42-ccbe-4012-88d6-973e3ea85349"
 version = "0.1.0"
 
-[[Hexagons]]
-deps = ["Test"]
-git-tree-sha1 = "de4a6f9e7c4710ced6838ca906f81905f7385fd6"
-uuid = "a1b4810d-1bce-5fbd-ac56-80944d57a21f"
-version = "0.2.0"
-
 [[IOCapture]]
 deps = ["Logging"]
 git-tree-sha1 = "377252859f740c217b936cebcd918a44f9b53b59"
