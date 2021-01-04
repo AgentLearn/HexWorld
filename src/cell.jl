@@ -1,4 +1,5 @@
 import Base: convert, length, collect, iterate
+using StructTypes
 
 """
     Hex
@@ -29,6 +30,7 @@ struct Cell <: Hex
     q::Int
     r::Int
 end
+StructTypes.StructType(::Type{Cell}) = StructTypes.Struct()
 
 """
     Cubic
@@ -76,7 +78,7 @@ the first row is the center of the cell and other 6 rows contain vertices.
 Vertices are orthered counter-clockwise, starting with the right-most vertex.
 """
 function cemter_and_vertices_loc(cell::Cell)
-    x0, y0 = center_loc(ceil)
+    x0, y0 = center_loc(cell)
     points = Array{Float64,2}(undef, 7, 2)
     points[1,1] = x0
     points[1,2] = y0
