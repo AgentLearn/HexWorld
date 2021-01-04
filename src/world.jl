@@ -6,7 +6,7 @@ StructTypes.subtypes(::Type{GridBuilder}) = (geology_builder = GeologyBuilder, f
 
 function build_test_manifest()
     manifest = Dict{String,String}()
-    dims = GridDims(1400, 1000)
+    dims = GridDims(140, 100)
     manifest["grid_dim"] = JSON3.write(dims)
 
     cell_types = CellMaterial[]
