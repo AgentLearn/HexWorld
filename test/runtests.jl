@@ -25,23 +25,41 @@ using StaticArrays
             @test x42 ≈ 7
             @test y42 ≈ 2 * sqrt(3) 
         end
+        @testset "Cell Geometry" begin
+            c = Cell(4, 3)
+            radius = 3
+            ring = cell_ring(c, radius)
+            @test length(ring) == radius * 6
+            # for cell in ring
+            #     println(cell)
+            # end
+        end
     end
     @testset "Cell Data" begin
-        cd = CellData(1, 250, SVector{6,UInt8}([0,0,1,0,12,255]))
+        cd = CellData(0x1A, 250, SVector{6,UInt8}([0,0,1,0,12,255]))
         pack::UInt64 = pack_cell_data(cd)
         @test cd == CellData(pack)
     end
     
     @testset "Grid" begin
         @testset "Edge Cell" begin
-            edges = EdgeCells(4, 5)
-            # for cell in dims
-            #     println(cell)
-            # end
+            edges = EdgeCells(q₁ = 4, r₁ = 5)
             c = collect(edges)
             @test length(c) == length(edges)
             @test c[1] == Cell(1, 1)
             @test c[9] == Cell(3, 5)
+
+            edges2 =  EdgeCells(q₀ = 11, q₁ = 14, r₁ = 5)
+            c2 = collect(edges2)
+            @test length(c2) == length(edges2)
+            @test c2[1] == Cell(11, 1)
+            @test c2[9] == Cell(13, 5)
+            
+            edges3 =  EdgeCells(q₀ = 11, r₀ = 21, q₁ = 14, r₁ = 25)
+            c3 = collect(edges3)
+            @test length(c3) == length(edges3)
+            @test c3[1] == Cell(11, 21)
+            @test c3[9] == Cell(13, 25)
         end
         @testset "Build a Grid" begin
             manifest = Dict{String,String}()

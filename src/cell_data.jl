@@ -20,6 +20,8 @@ cell_materials = Dict{String,UInt8}(
     "sand" => 0x06,
     "mud" => 0x07,
     "gras" => 0x08,
+    "gravel" => 0x09,
+    "road" => 0x0A,
 )
 
 
@@ -68,7 +70,7 @@ StructTypes.StructType(::Type{WallMaterial}) = StructTypes.Struct()
 """
     Materials used to describ cell's geometyr and physics.
     
-Each material has an uniigue `id::UInt8` and `type::String` to identify
+Each material has an unique `id::UInt8` and `type::String` to identify
  the type of the material.
 """
 abstract type CellMaterial end
@@ -106,6 +108,10 @@ StructTypes.subtypes(::Type{CellMaterial}) = (flat = FlatCell, tall = TallCell)
 
 """
 Describes a Hexagonal Cell in a grid.
+
+- `type::UInt8`: points to unique [`CellMaterial`](@ref)
+- `heigth::UInt8`: physical height of the cell
+- `walls::SVector{6,UInt8}`: wall meterial IDs from [`WallMaterial`](@ref)
 """
 struct CellData
     type::UInt8 
@@ -113,7 +119,13 @@ struct CellData
     walls::SVector{6,UInt8}
 end
 flat_cell_data(type::UInt8) = return CellData(type, 0x0, SVector{6,UInt8}(0x0 for i in 1:6))
+flat_cell_data(type::UInt8, heigh::UInt8) = return CellData(type, heigh, SVector{6,UInt8}(0x0 for i in 1:6))
 
+"""
+    CellData(pack)
+
+Unpacks the bytest into `CellData` structure
+"""
 function CellData(pack::UInt64)
     bytes = reinterpret(UInt8, [pack])
     t = bytes[1]
@@ -122,4 +134,9 @@ function CellData(pack::UInt64)
     return CellData(t, h, ws)
 end
 
+"""
+pack_cell_data(c)
+
+Packs the values of a `CellData` structure into 64bits.
+"""
 pack_cell_data(c::CellData) = reinterpret(UInt64, [c])[1]
