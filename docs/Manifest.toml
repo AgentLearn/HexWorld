@@ -24,7 +24,7 @@ uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.25.5"
 
 [[HexWorld]]
-deps = ["Hexagons", "Test"]
+deps = ["Test"]
 path = ".."
 uuid = "18ac6b42-ccbe-4012-88d6-973e3ea85349"
 version = "0.1.0"
